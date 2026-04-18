@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Connect 4</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            margin: auto;
+            width: 70%;
+            border: 2px solid #333;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #666;
+            border-radius: 30px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        .cell.red { background-color: red; }
+        .cell.yellow { background-color: yellow; }
+    </style>
+</head>
+<body>
+    <h1>Retro Connect 4</h1>
+    <div id="game-info">
+        <h2>PELAAJA SIPOOSTA</h2>
+        <h3>KUMPI ON VÄHEMMÄN HUMALASSA?</h3>
+        <p id="difficulty">VAIKEUSASTE (TARVIIKO KYSYÄ)</p>
+    </div>
+    <div class="board" id="board"></div>
+    <button id="start-button">YRITÄ OSUA TÄHÄN</button>
+    <div id="stats"></div>
+    <script>
+        const boardElem = document.getElementById('board');
+        const startButton = document.getElementById('start-button');
+        let board = Array(6).fill(null).map(() => Array(7).fill(0));
+        let currentPlayer = 1; // 1 for red, 2 for yellow
+
+        function renderBoard() {
+            boardElem.innerHTML = '';
+            board.forEach(row => {
+                row.forEach(cell => {
+                    const cellDiv = document.createElement('div');
+                    cellDiv.className = 'cell ' + (cell === 1 ? 'red' : (cell === 2 ? 'yellow' : ''));
+                    boardElem.appendChild(cellDiv);
+                });
+            });
+        }
+
+        function dropDisc(column) {
+            for (let row = 5; row >= 0; row--) {
+                if (board[row][column] === 0) {
+                    board[row][column] = currentPlayer;
+                    currentPlayer = currentPlayer === 1 ? 2 : 1;
+                    renderBoard();
+                    break;
+                }
+            }
+        }
+
+        boardElem.addEventListener('click', (event) => {
+            const column = Math.floor(event.pageX / (boardElem.clientWidth / 7));
+            dropDisc(column);
+        });
+
+        startButton.addEventListener('click', () => {
+            board = Array(6).fill(null).map(() => Array(7).fill(0));
+            currentPlayer = 1;
+            renderBoard();
+        });
+
+        renderBoard();
+    </script>
+</body>
+</html>
